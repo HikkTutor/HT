@@ -3,3 +3,4 @@ dushnometr
 okruglator
 doxer
 Fping
+Animated-Text
