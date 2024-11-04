@@ -4,3 +4,8 @@ okruglator
 doxer
 Fping
 Animated-Text
+Premium-Stats
+Del
+Currency-Viewer.py
+Text-Styler
+VoiceMP
