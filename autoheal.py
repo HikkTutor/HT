@@ -26,7 +26,7 @@ import traceback
 class smartautoheal(loader.Module):
     """Модуль для автохила при заражении или горячке в ЛС игрового бота"""
 
-    strings = {'name': 'smartautoheal'}
+    strings = {'name': 'AutoHeal'}
     vaccine_needed = False 
     healing_in_progress = False  
     module_disabled = False  
