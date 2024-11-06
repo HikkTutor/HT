@@ -9,4 +9,4 @@ Del
 CurrencyViewer
 TextStyler
 VoiceMP
-smartautoheal
+autoheal
