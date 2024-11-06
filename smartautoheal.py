@@ -1,4 +1,4 @@
-__version__ = (1, 0, 2)
+__version__ = (1, 0, 3)
 #ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ© Copyright 2024
 #ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤhttps://t.me/unnic
 # 🔒ㅤㅤㅤㅤㅤLicensed under the GNU AGPLv3
@@ -19,7 +19,7 @@ __version__ = (1, 0, 2)
 #██║░░░██║██║╚████║██║╚████║██║██║░░██╗
 #╚██████╔╝██║░╚███║██║░╚███║██║╚█████╔╝
 #░╚═════╝░╚═╝░░╚══╝╚═╝░░╚══╝╚═╝░╚════╝
-from .. import loader  
+from .. import loader   
 import asyncio
 import traceback
 
@@ -86,63 +86,63 @@ class smartautoheal(loader.Module):
     def is_infect_command(self, message_text):
         return any(cmd in message_text for cmd in ["!заразить", "/заразить", "заразить"])
 
-async def watcher(self, message):
-    try:
-        bot_chat_id = self.config["BOT_CHAT_ID"]
+    async def watcher(self, message):
+        try:
+            bot_chat_id = self.config["BOT_CHAT_ID"]
 
-        if bot_chat_id not in self.allowed_bots:
-            await message.client.send_message(message.chat_id, "<b>Неправильный ID бота. Убедитесь, что вы используете правильный бот.</b>")
-            self.config["BOT_CHAT_ID"] = 5443619563
-            await message.client.send_message(message.chat_id, "<b>ID сброшен на стоковый: 5443619563</b>")
-            return
+            if bot_chat_id not in self.allowed_bots:
+                await message.client.send_message(message.chat_id, "<b>Неправильный ID бота. Убедись, что ты используешь правильный id бота.</b>")
+                self.config["BOT_CHAT_ID"] = 5443619563
+                await message.client.send_message(message.chat_id, "<b>ID сброшен на стоковый: 5443619563</b>")
+                return
 
-        if message.chat_id == bot_chat_id:
-            if not self.module_disabled:
-                
-                if self.is_infected_message(message.raw_text) or self.is_fever_message(message.raw_text):
-                    if self.spam_in_progress:
-                        return
+            if message.chat_id == bot_chat_id:
+                if not self.module_disabled:
+                    if self.is_infected_message(message.raw_text):
+                        await message.client.send_message(message.chat_id)
 
-                    self.spam_in_progress = True
-                    
-                    await self.buy_vaccine_if_needed(message.client, message.chat_id)
-                    
-                    self.spam_in_progress = False  
+                    if self.is_infected_message(message.raw_text) or self.is_fever_message(message.raw_text):
+                        if self.spam_in_progress:
+                            return
+                        
+                        self.spam_in_progress = True
+                        
+                        await self.buy_vaccine_if_needed(message.client, message.chat_id)
+                        
+                        self.spam_in_progress = False  
 
-                if self.is_cured_message(message.raw_text):
-                    self.vaccine_needed = False
+                    if self.is_cured_message(message.raw_text):
+                        self.vaccine_needed = False
 
-            if "📝 У вас нет столько био-ресурсов или ирис-коинов" in message.raw_text:
-                self.module_disabled = True
-                await message.client.send_message(message.chat_id, "<b>Модуль отключён из-за недостатка ресурсов.</b>")
+                if "📝 У вас нет столько био-ресурсов или ирис-коинов" in message.raw_text:
+                    self.module_disabled = True
+                    await message.client.send_message(message.chat_id, "<b>Модуль отключён из-за недостатка ресурсов.</b>")
 
-            if self.is_buy_vaccine_command(message.raw_text) or self.is_infect_command(message.raw_text):
-                if self.module_disabled:
-                    self.module_disabled = False
-                    await message.client.send_message(message.chat_id, "<b>Я вижу вы начали пользоваться ботом.\nВключаю автохил.</b>")
-                    
-    except Exception as e:
-        error_trace = traceback.format_exc()
-        await message.client.send_message(message.chat_id, f"<b>Ошибка при автоматическом лечении:</b>\n{str(e)}")
-        
-@loader.command(ru_doc="Показать список игровых ботов")
-async def show_bots(self, message):
-    """Список разрешённых ботов и их id"""
-    await message.client.send_message(
-        message.chat_id,
-        f"<blockquote><b>Список разрешённых игровых ботов:</b></blockquote>\n\n"
-        f"<blockquote>🎩 <a href='tg://user?id=5443619563'>Iris | Black Diamond</a> ⮕ <code>5443619563</code></blockquote>\n"
-        f"<blockquote>🟣 <a href='tg://user?id=5226378684'>Iris | Deep Purple</a> ⮕ <code>5226378684</code></blockquote>\n"
-        f"<blockquote>🔵 <a href='tg://user?id=707693258'>Iris | Чат-менеджер</a> ⮕ <code>707693258</code></blockquote>\n"
-        f"<blockquote>🟡 <a href='tg://user?id=5137994780'>Iris | Bright Sophie</a> ⮕ <code>5137994780</code></blockquote>\n"
-        f"<blockquote>⚪️ <a href='tg://user?id=5434504334'>Iris | Moonlight Dyla</a> ⮕ <code>5434504334</code></blockquote>\n\n"
-        f"<blockquote><b>Внимание!</b> id бота использовать по назначению.</blockquote>\n"
-        f"<blockquote>id бота используется в конфиге, без @</blockquote>\n\n"
-        f"<blockquote><b>По умолчанию работаю с: </b> 🎩 <a href='tg://user?id=5443619563'>Iris | Black Diamond</a></blockquote>",
-        parse_mode="HTML")
-        
-    # Хер # Херня # Хератень # Нахер # Захер # Похер
-    # Может быть                     # Не может быть
+                if self.is_buy_vaccine_command(message.raw_text) or self.is_infect_command(message.raw_text):
+                    if self.module_disabled:
+                        self.module_disabled = False
+                        await message.client.send_message(message.chat_id, "<b>Я вижу вы начали пользоваться ботом.\nВключаю автохил.</b>")
+
+        except Exception as e:
+            error_trace = traceback.format_exc()
+            await message.client.send_message(message.chat_id, f"<b>Ошибка при автоматическом лечении:</b>\n{str(e)}")
+
+    @loader.command(ru_doc="Показать список игровых ботов")
+    async def show_bots(self, message):
+        """Список разрешённых ботов и их id"""
+        await message.client.send_message(
+            message.chat_id,
+            f"<b>Список разрешённых игровых ботов:</b>\n\n"
+            f"🎩 <a href='tg://user?id=5443619563'>Iris | Black Diamond</a> ⮕ <code>5443619563</code>\n"
+            f"🟣 <a href='tg://user?id=5226378684'>Iris | Deep Purple</a> ⮕ <code>5226378684</code>\n"
+            f"🔵 <a href='tg://user?id=707693258'>Iris | Чат-менеджер</a> ⮕ <code>707693258</code>\n"
+            f"🟡 <a href='tg://user?id=5137994780'>Iris | Bright Sophie</a> ⮕ <code>5137994780</code>\n"
+            f"⚪️ <a href='tg://user?id=5434504334'>Iris | Moonlight Dyla</a> ⮕ <code>5434504334</code>\n\n"
+            f"<b>Внимание!</b> id бота используйте по назначению.\n"
+            f"id бота используется в конфиге, без @\n\n"
+            f"<b>По умолчанию работаю с: </b> 🎩 <a href='tg://user?id=5443619563'>Iris | Black Diamond</a>",
+            parse_mode="HTML"
+            )
         
     # Хер # Херня # Хератень # Нахер # Захер # Похер
     # Может быть                     # Не может быть 
