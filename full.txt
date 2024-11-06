@@ -3,9 +3,10 @@ dushnometr
 okruglator
 doxer
 Fping
-Animated-Text
-Premium-Stats
+AnimatedText
+PremiumStats
 Del
-Currency-Viewer.py
-Text-Styler
+CurrencyViewer
+TextStyler
 VoiceMP
+smartautoheal
