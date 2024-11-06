@@ -99,7 +99,6 @@ class smartautoheal(loader.Module):
             if message.chat_id == bot_chat_id:
                 if not self.module_disabled:
                     if self.is_infected_message(message.raw_text):
-                        await message.client.send_message(message.chat_id)
 
                     if self.is_infected_message(message.raw_text) or self.is_fever_message(message.raw_text):
                         if self.spam_in_progress:
