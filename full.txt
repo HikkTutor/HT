@@ -11,3 +11,4 @@ TextStyler
 VoiceMP
 autoheal
 loginer
+Cping
