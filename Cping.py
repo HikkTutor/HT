@@ -1,4 +1,4 @@
-__version__ = (1, 0, 3)
+__version__ = (1, 0, 4)
 
 #            © Copyright 2024
 #           https://t.me/HikkTutor 
@@ -87,6 +87,15 @@ class Cping(loader.Module):
                 lambda: "Эмодзи в начале сообщения (может быть пустым)",
                 validator=loader.validators.String(),
             ),
+            loader.ConfigValue(
+                "poyas",
+                0,
+                lambda: "Добавить или отнять часы.\n"
+                "Пункт для тех, у кого платный хостинг находящийся за пределами часового пояса\n "
+                "-число чтобы отнять час(ы)\n"
+                "+число чтобы добавить час(ы)\n",
+                validator=loader.validators.Integer(minimum=-12, maximum=14),
+            ),
         )
 
     def get_plural(self, number, one, two, five):
@@ -147,7 +156,10 @@ class Cping(loader.Module):
         try:
             countdown_date_str = self.config["daytime"]
             target_date = self.parse_date(countdown_date_str)
-            today = datetime.now()
+
+            hour_offset = self.config["poyas"]
+            today = datetime.now() + timedelta(hours=hour_offset)
+
             time_difference = target_date - today
 
             if time_difference.total_seconds() < 86400:
@@ -185,10 +197,11 @@ class Cping(loader.Module):
 
         uptime = utils.formatted_uptime()
 
-        current_time = datetime.now().strftime("%H:%M:%S")
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        day_of_week = datetime.now().strftime("%A")
+        hour_offset = self.config["poyas"]
+        current_time = (datetime.now() + timedelta(hours=hour_offset)).strftime("%H:%M:%S")
+        current_date = (datetime.now() + timedelta(hours=hour_offset)).strftime("%Y-%m-%d")
 
+        day_of_week = (datetime.now() + timedelta(hours=hour_offset)).strftime("%A")
         days_of_week = {
             "Monday": "Понедельник",
             "Tuesday": "Вторник",
