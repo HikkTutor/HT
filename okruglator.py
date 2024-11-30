@@ -12,10 +12,12 @@ __version__ = (1, 2, 5)
 #┗┛━┗┛┗┛┗┛┗┛┗┛┗┛━┗━━┛━┗━━┛━┗━┛┗━━┛┗┛━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # load from: t.me:HikkTutor 
 # meta developer:@HikkTutor 
-# meta banner:https://t.me/HikkTutor
+# author: vsakoe
 # name: okruglator
+
 import subprocess
 from telethon.tl.types import DocumentAttributeVideo
 from .. import loader
