@@ -12,9 +12,10 @@ __version__ = (1, 2, 8)
 #┗┛━┗┛┗┛┗┛┗┛┗┛┗┛━┗━━┛━┗━━┛━┗━┛┗━━┛┗┛━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # load from: t.me:HikkTutor 
 # meta developer:@HikkTutor 
-# meta banner:https://t.me/HikkTutor
+# author: vsakoe
 # name: Fping
 
 import time
