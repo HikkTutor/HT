@@ -12,10 +12,12 @@ __version__ = (1, 0, 4)
 #┗┛━┗┛┗┛┗┛┗┛┗┛┗┛━┗━━┛━┗━━┛━┗━┛┗━━┛┗┛━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # load from: t.me:HikkTutor 
 # meta developer:@HikkTutor 
-# meta banner:https://t.me/HikkTutor
+# author: vsakoe
 # name: Cping
+
 import time
 from datetime import datetime, timedelta
 import re
