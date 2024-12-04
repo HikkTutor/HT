@@ -14,8 +14,8 @@ __version__ = (1, 6, 4)
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # load from: t.me:HikkTutor 
 # meta developer:@HikkTutor 
-# meta banner:https://t.me/HikkTutor
-# name: Doxer 
+# author: vsakoe
+# name: doxer
 from .. import loader, utils
 import random
 import asyncio
