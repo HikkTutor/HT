@@ -14,7 +14,7 @@ __version__ = (1, 0, 5)
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # load from: t.me:HikkTutor 
 # meta developer:@HikkTutor 
-# meta banner:https://t.me/HikkTutor
+# author: vsakoe
 # name: VoiceMP
 
 import os
