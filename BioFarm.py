@@ -20,7 +20,10 @@ __version__ = (1, 8, 3)
 #██║░░░██║██║╚████║██║╚████║██║██║░░██╗
 #╚██████╔╝██║░╚███║██║░╚███║██║╚█████╔╝
 #░╚═════╝░╚═╝░░╚══╝╚═╝░░╚══╝╚═╝░╚════╝
-
+# load from: t.me:HikkTutor 
+# meta developer:@HikkTutor 
+# author: vsakoe
+# name: BioFarm
 from .. import loader, utils
 import asyncio
 import re
