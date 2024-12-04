@@ -12,8 +12,10 @@ __version__ = (2, 7, 1)
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# meta banner: @HikkTutor
-# meta developer: @HikkTutor
+# load from: t.me:HikkTutor 
+# meta developer:@HikkTutor 
+# author: vsakoe
+# name: dushnometr
 
 from .. import loader, utils
 import random
