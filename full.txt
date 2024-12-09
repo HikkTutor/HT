@@ -12,3 +12,4 @@ VoiceMP
 autoheal
 loginer
 Cping
+Spam+
