@@ -1,6 +1,6 @@
-__version__ = (1, 0, 4)
+__version__ = (1, 0, 9)
 
-#            © Copyright 2024
+#            © Copyright 2025
 #           https://t.me/HikkTutor 
 # 🔒      Licensed under the GNU AGPLv3
 # 🌐 https://www.gnu.org/licenses/agpl-3.0.html
@@ -12,7 +12,6 @@ __version__ = (1, 0, 4)
 #┗┛━┗┛┗┛┗┛┗┛┗┛┗┛━┗━━┛━┗━━┛━┗━┛┗━━┛┗┛━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 # load from: t.me:HikkTutor 
 # meta developer:@HikkTutor 
 # author: vsakoe
@@ -27,7 +26,7 @@ import logging
 
 @loader.tds
 class Cping(loader.Module):
-    """Кастомный пинг с поддержкой премиум эмодзи"""
+    """Кастомный пинг с поддержкой премиум эмодзи и медиа"""
 
     strings = {
         "name": "Cping",
@@ -41,7 +40,7 @@ class Cping(loader.Module):
             "{day} - Текущий день недели.\n"
             "{ny} - До заданной даты (дни или часы).\n"
             "{emoji_line} - Место для ваших премиум эмодзи.\n"
-            "{moon} - Эмодзи в начале сообщения.\n\n"
+            "{stat} - Эмодзи уровня пинга.\n\n"
             "Используйте теги для форматирования текста:\n"
             "[ж]текст[/ж] - Жирный текст\n"
             "[м]текст[/м] - Моноширинный текст\n"
@@ -68,7 +67,7 @@ class Cping(loader.Module):
                 "ping",
                 (
                     "{emoji_line}\n"
-                    "🚀Пинг: {ping} ms\n"
+                    "🚀Пинг: {ping} ms {stat}\n"
                     "⏳Аптайм: {up}\n"
                     "⏰Время: {time}, {day}\n"
                     "🗓До нового года: {ny}\n"
@@ -98,10 +97,21 @@ class Cping(loader.Module):
                 "+число чтобы добавить час(ы)\n",
                 validator=loader.validators.Integer(minimum=-12, maximum=14),
             ),
+            loader.ConfigValue(
+                "media",
+                None,
+                lambda: "Ссылка на медиа (фото/видео/гиф), которое будет прикреплено к сообщению с пингом.",
+                validator=loader.validators.String(),
+            ),
+            loader.ConfigValue(
+                "stat",
+                "🟢|🟡|🔴",
+                lambda: "Эмодзи для уровней пинга в формате: хороший|средний|плохой",
+                validator=loader.validators.String(),
+            ),
         )
 
     def get_plural(self, number, one, two, five):
-        """Возвращает правильное склонение в зависимости от числа."""
         n = abs(number) % 100
         if 11 <= n <= 19:
             return five
@@ -113,7 +123,6 @@ class Cping(loader.Module):
         return five
 
     def parse_date(self, date_str):
-        """Разбирает строку даты и возвращает объект datetime."""
         today = datetime.now()
         months = {
             'января': 1, 'февраля': 2, 'марта': 3, 'апреля': 4,
@@ -186,6 +195,19 @@ class Cping(loader.Module):
             text = re.sub(key, value, text, flags=re.IGNORECASE)
         return text
 
+    def get_stat_emoji(self, ping_time):
+        emojis = self.config["stat"].split('|')
+        if len(emojis) != 3:
+            logging.error("Неверный формат конфигурации stat. Используйте формат: хороший|средний|плохой.")
+            return "❓"
+
+        if ping_time <= 150:
+            return emojis[0]
+        elif ping_time <= 300:
+            return emojis[1]
+        else:
+            return emojis[2]
+
     @loader.command(
         ru_doc=" - Узнать пинг вашего юзербота",
     )
@@ -217,6 +239,8 @@ class Cping(loader.Module):
 
         days_to_event = self.days_to_date()
 
+        ping_emoji = self.get_stat_emoji(ping_time)
+
         response = self.config["ping"].format(
             ping=ping_time,
             up=uptime,
@@ -225,9 +249,19 @@ class Cping(loader.Module):
             day=day_of_week,
             ny=days_to_event,
             emoji_line="",
-            moon=moon
+            moon=moon,
+            stat=ping_emoji
         )
 
         response = self.format_text(response)
 
-        await utils.answer(message, response)
+        media = self.config["media"]
+        
+        if media:
+            try:
+                await utils.answer_file(message, media, caption=response)
+            except Exception as e:
+                logging.error(f"Ошибка при отправке медиа: {e}")
+                await utils.answer(message, response)
+        else:
+            await utils.answer(message, response)
