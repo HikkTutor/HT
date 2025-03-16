@@ -26,6 +26,7 @@ import logging
 
 @loader.tds
 class Cping(loader.Module):
+    """Настраиваемый пинг с поддержкой медиа и премиум эмодзи"""
     strings = {
         "name": "Cping",
         "configping": (
