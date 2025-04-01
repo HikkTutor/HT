@@ -16,3 +16,4 @@ Spam+
 sozivala
 ASCIIArt
 MSG
+WinKey
