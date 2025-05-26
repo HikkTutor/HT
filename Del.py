@@ -1,4 +1,4 @@
-__version__ = (1, 0, 5)
+__version__ = (1, 0, 8)
 #ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ© Copyright 2024
 #ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤhttps://t.me/unnic
 # 🔒ㅤㅤㅤㅤㅤLicensed under the GNU AGPLv3
@@ -37,20 +37,24 @@ class DelMod(loader.Module):
     strings = {
         "name": "Del",
         "author": "@HikkTutor",
-        "no_deleted_accounts": "<emoji document_id=5341509066344637610>😎</emoji> <b>Здесь нет ни одного удаленного аккаунта.</b>",
-        "deleted_accounts_removed": "<emoji document_id=5328302454226298081>🫥</emoji> <b>Удалено {} удаленных аккаунтов.</b>",
-        "no_messages": "<emoji document_id=5341509066344637610>😎</emoji> <b>Здесь нет сообщений от удаленных аккаунтов.</b>",
-        "messages_removed": "<emoji document_id=5328302454226298081>🫥</emoji> <b>Удалено {} сообщений от удаленных аккаунтов.</b>",
+        "no_deleted_accounts": "<emoji document_id=5341509066344637610>😎</emoji> <b>Здесь нет ни одного удаленного аккаунта</b>",
+        "deleted_accounts_removed": "<emoji document_id=5328302454226298081>🫥</emoji> <b>Удалено {} удаленных аккаунтов</b>",
+        "no_messages": "<emoji document_id=5341509066344637610>😎</emoji> <b>Здесь нет сообщений от удаленных аккаунтов</b>",
+        "messages_removed": "<emoji document_id=5328302454226298081>🫥</emoji> <b>Удалено {} сообщений от удаленных аккаунтов</b>",
         "not_admin": "<emoji document_id=5787544344906959608>ℹ️</emoji> <b>Недостаточно прав для выполнения этой команды.</b>",
-        "not_group": "<emoji document_id=5787313834012184077>😀</emoji> <b>Эта команда предназначена только для групп!</b>",
-        "error": "<emoji document_id=5787544344906959608>ℹ️</emoji> <b>Ошибка при удалении аккаунта {}: {}.</b>",
-        "searching": "<emoji document_id=5188311512791393083>🔎</emoji> <b>Поиск удаленных аккаунтов..</b>",
-        "searching_messages": "<emoji document_id=5188311512791393083>🔎</emoji> <b>Поиск сообщений от удаленных аккаунтов..</b>",
+        "not_group": "<emoji document_id=5787313834012184077>😀</emoji> <b>Эта команда предназначена только для групп</b>",
+        "error": "<emoji document_id=5787544344906959608>ℹ️</emoji> <b>Ошибка при удалении аккаунта {}: {}</b>",
+        "searching": "<emoji document_id=5188311512791393083>🔎</emoji> <b>Поиск удаленных аккаунтов</b>",
+        "searching_messages": "<emoji document_id=5188311512791393083>🔎</emoji> <b>Поиск сообщений от удаленных аккаунтов</b>",
+        "limit_reached": "⚠️ <b>Достигнут лимит удаления сообщений.\nПродолжить поиск сообщений от удалённых аккаунтов?</b>",
+        "continue_button": "Продолжить",
+        "stop_button": "Закончить",
     }
 
     async def client_ready(self, client, db):
         self._client = client
         self.db = db
+        self.removed_count = 0
 
     @loader.command()
     async def delete(self, message: types.Message):
@@ -100,7 +104,7 @@ class DelMod(loader.Module):
             await utils.answer(message, self.strings("not_admin"))
             return
 
-        removed_count = 0
+        self.removed_count = 0
         edit_message = await utils.answer(message, self.strings("searching_messages"))
         if not edit_message:
             edit_message = message
@@ -119,9 +123,11 @@ class DelMod(loader.Module):
 
             for msg in messages:
                 if msg.sender and isinstance(msg.sender, types.User) and msg.sender.deleted:
+                    if self.removed_count >= 100:
+                        break
                     try:
                         await msg.delete()
-                        removed_count += 1
+                        self.removed_count += 1
                     except ChatAdminRequiredError:
                         await utils.answer(message, self.strings("not_admin"))
                         return
@@ -134,8 +140,45 @@ class DelMod(loader.Module):
                 logger.debug(f"Updated offset_id to: {offset_id}")
             else:
                 break
-                
-        if removed_count == 0:
+
+            if self.removed_count >= 100:
+                await self.inline.form(
+                    message=edit_message,
+                    text=self.strings("limit_reached"),
+                    reply_markup=[
+                        [
+                            {
+                                "text": self.strings("continue_button"),
+                                "callback": self.continue_delmsg,
+                                "args": (edit_message.id,)
+                            },
+                            {
+                                "text": self.strings("stop_button"),
+                                "callback": self.stop_delmsg,
+                                "args": (edit_message.id,)
+                            }
+                        ]
+                    ]
+                )
+                return
+
+        if self.removed_count == 0:
             await edit_message.edit(self.strings("no_messages"))
         else:
-            await edit_message.edit(self.strings("messages_removed").format(removed_count))
+            await edit_message.edit(self.strings("messages_removed").format(self.removed_count))
+
+    async def continue_delmsg(self, call, message_id):
+        message = await call.get_message()
+        await message.edit(self.strings("searching_messages"))
+        await self.delmsg(message)
+
+    async def stop_delmsg(self, call, message_id):
+        message = await call.get_message()
+        await message.edit(self.strings("messages_removed").format(self.removed_count))
+        await call.delete()
+
+        # ВНИМАНИЕ! - Версия модуля пока-что сыровата.
+        # ВНИМАНИЕ! - Модуль очень востребованный к API системе.
+        # Внедрён лимит удаления сообщений, от мёртвых аккаунтов.
+        # Инлайн "отмены" может некорретно работать.
+        # Прежде чем устанавливать, подумайте 787 раз.
