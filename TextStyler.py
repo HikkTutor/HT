@@ -1,4 +1,4 @@
-__version__ = (1, 0, 6)
+__version__ = (1, 0, 7)
 #ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ© Copyright 2024
 #ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤhttps://t.me/unnic
 # 🔒ㅤㅤㅤㅤㅤLicensed under the GNU AGPLv3
@@ -178,14 +178,14 @@ class TextStylerMod(loader.Module):
         emojis = self.get_emojis(is_premium_user)
         
         instruction = (
-            f"<blockquote><b>{emojis['common0']} Справка по модулю</b> {emojis['common1']}</blockquote>\n"
+            f"<blockquote><b>{emojis['common0']} Справка по модулю:</b> {emojis['common1']}</blockquote>\n"
             f"<blockquote><b>{emojis['common2']} Все исходящие сообщения автоматически форматируются, если включен тот или инной формат.</b>\n\n"
             f"{emojis['common2']} Если сообщение начинается с символа игнорирования, сообщение <b>не будет изменено.</b>\n\n"
             f"{emojis['common2']} Модуль не изменяет текст, содержащий только эмодзи, стикеры, GIF и медиафайлы.\n\n"
             f"{emojis['common2']} Модуль не действует в каналах, если <b>включить игнор</b>, ниже настройка.\n\n"
             f"{emojis['common2']} Hikka не поддерживает форматирование: <code>«𝗕𝗹𝗼𝗰𝗸𝗾𝘂𝗼𝘁𝗲»</code>\n\n"
             f"{emojis['common2']} Эмодзи и стикеры в тексте останутся без изменений, <b>если выключены все форматы.</b></blockquote>\n\n"
-            f"<blockquote>{emojis['common0']} <b>Информация и настроека:</b> {emojis['common1']}</blockquote>\n"
+            f"<blockquote>{emojis['common0']} <b>Информация и настройка:</b> {emojis['common1']}</blockquote>\n"
             f"<blockquote>{emojis['common2']} Символ игнорирования по умолчанию: «<code>.</code>».\n"
             f"{emojis['common3']} <b>Настройка:</b> <code>.cfg TextStyler ignore_char</code>\n\n"
             f"{emojis['common2']} Ты можешь включить/выключить <b>игнор для каналов.</b>\n"
